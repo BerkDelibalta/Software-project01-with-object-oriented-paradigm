@@ -39,7 +39,7 @@ public class TravelPortal {
 			throw new TPException("The agency already defined!");
 
 		for (String activity : activityTypes) {
-			if (!activities.contains(activity))	throw new TPException("The activity is not defined before!");
+			if (!activities.contains(activity)) throw new TPException("The activity is not defined before!");
 
 			agencies.add(new Agency(name, activity));
 		}
@@ -92,7 +92,7 @@ public class TravelPortal {
 
 	public int getProposalPrice(String code) throws TPException {
 	
-		if (!proposals.containsKey(code))		throw new TPException("The proposal does not exist!");
+		if (!proposals.containsKey(code)) throw new TPException("The proposal does not exist!");
 
 		int activitiesTotalPrice = proposals.get(code).getActivities().stream().map(e -> e.getPrice())
 				.collect(Collectors.summingInt(e -> e));
@@ -148,8 +148,7 @@ public class TravelPortal {
 			}
 
 			if (proposal.getAttendees().size() >= proposal.getMaxNP()
-					|| proposal.getAttendees().size() < proposal.getMinNP())
-				throw new TPException("The number of attendees to the tour is out of range!");
+					|| proposal.getAttendees().size() < proposal.getMinNP()) throw new TPException("The number of attendees to the tour is out of range!");
 
 			return proposal.getAttendees().stream().map(Participant::getName).collect(Collectors.toList());
 
@@ -188,10 +187,9 @@ public class TravelPortal {
 		tmp = "";
 		int index = 0;
 
-		if (proposal != null) {
+         if (proposal != null) {
 
-			if (proposal.getAttendees().size() != evaluationsSize)
-				throw new TPException("The number of evaluations should be equal to the number of participants!");
+             if (proposal.getAttendees().size() != evaluationsSize) throw new TPException("The number of evaluations should be equal to the number of participants!");
 
 			for (Participant participant : proposal.getAttendees()) {
 
