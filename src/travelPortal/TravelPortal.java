@@ -156,13 +156,12 @@ public class TravelPortal {
 
 	public int getIncome(String code) {
 
-		List<Activity> activityList = proposals.get(code).getActivities();
 
 		int totalActivityPrice = 0;
 
-		if (activityList != null) {
+		if (proposals.get(code).getActivities() != null) {
 
-			for (Activity activity : activityList) {
+			for (Activity activity : proposals.get(code).getActivities()) {
 
 				totalActivityPrice += activity.getPrice();
 
