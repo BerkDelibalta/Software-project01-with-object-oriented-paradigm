@@ -210,7 +210,7 @@ public class TravelPortal {
 
 		return Evaluations.stream()
 			.collect(Collectors.groupingBy(Evaluation::getParticipant, TreeMap::new,
-				Collectors.mapping(Evaluation::getPoint, Collectors.summingInt(e -> e))));
+				Collectors.mapping(Evaluation::getPoint, Collectors.summingInt(Integer::intValue))));
 
 	}
 
@@ -221,7 +221,7 @@ public class TravelPortal {
 		return proposals.entrySet().stream().flatMap(e -> e.getValue().getActivities().stream())
 				.sorted(Comparator.comparing(Activity::getActivityType))
 				.collect(Collectors.groupingBy(Activity::getActivityType, TreeMap::new,
-						Collectors.mapping(Activity::getPrice, Collectors.summingInt(e -> e))));
+						Collectors.mapping(Activity::getPrice, Collectors.summingInt(Integer::intValue))));
 
 	}
 
