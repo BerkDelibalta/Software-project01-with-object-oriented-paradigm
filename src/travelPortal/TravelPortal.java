@@ -191,9 +191,7 @@ public class TravelPortal {
 
 				int point = evaluations[index];
 
-				Evaluation evaluation = new Evaluation(participant.getName(), point);
-
-				Evaluations.add(evaluation);
+				Evaluations.add(new Evaluation(participant.getName(), point));
 
 				if (index != 0)
 					tmp += ", ";
@@ -210,7 +208,8 @@ public class TravelPortal {
 
 	public SortedMap<String, Integer> getTotalRatingsForParticipants() {
 
-		return Evaluations.stream().collect(Collectors.groupingBy(Evaluation::getParticipant, TreeMap::new,
+		return Evaluations.stream()
+			.collect(Collectors.groupingBy(Evaluation::getParticipant, TreeMap::new,
 				Collectors.mapping(Evaluation::getPoint, Collectors.summingInt(e -> e))));
 
 	}
@@ -229,7 +228,8 @@ public class TravelPortal {
 
 	public SortedMap<Integer, List<String>> participantsWithSameNofProposals() {
 
-		return proposals.entrySet().stream().flatMap(e -> e.getValue().getAttendees().stream())
+		return proposals.entrySet().stream()
+			.flatMap(e -> e.getValue().getAttendees().stream())
 				.collect(Collectors.groupingBy(Participant::getName, TreeMap::new,
 						Collectors.collectingAndThen(Collectors.counting(), Long::intValue)))
 				.entrySet().stream()
