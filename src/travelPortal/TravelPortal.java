@@ -65,9 +65,8 @@ public class TravelPortal {
 
 		if (agencies.stream().noneMatch(e -> e.getName().equals(agency))) throw new TPException("The agency is not existing!");
 
-		Proposal proposal = new Proposal(agency, period, minNP, maxNP, price);
 
-		proposals.put(code, proposal);
+		proposals.put(code, new Proposal(agency, period, minNP, maxNP, price));
 
 		String theTime = period.trim().split(":")[1];
 
@@ -84,8 +83,7 @@ public class TravelPortal {
 		if (agencies.stream().filter(e -> e.getName().equals(proposal.getAgency()))
 				.noneMatch(e -> e.getActivity().equals(activityType))) throw new TPException("The agency does not offer the activity!");
 
-		Activity activity = new Activity(activityType, price);
-		proposal.AddActivities(activity);
+		proposal.AddActivities(new Activity(activityType, price));
 
 		return proposals.get(code).getActivities().stream().map(e -> e.getPrice())
 				.collect(Collectors.summingInt(e -> e));
@@ -123,14 +121,11 @@ public class TravelPortal {
 
 						int month1 = Integer.parseInt(proposal.getPeriod().trim().split(":")[0]);
 						int start1 = Integer.parseInt((proposal.getPeriod().trim().split(":")[1]).trim().split("-")[0]);
-						int finish1 = Integer
-								.parseInt((proposal.getPeriod().trim().split(":")[1]).trim().split("-")[1]);
+						int finish1 = Integer.parseInt((proposal.getPeriod().trim().split(":")[1]).trim().split("-")[1]);
 
 						int month2 = Integer.parseInt(proposal2.getPeriod().trim().split(":")[0]);
-						int start2 = Integer
-								.parseInt((proposal2.getPeriod().trim().split(":")[1]).trim().split("-")[0]);
-						int finish2 = Integer
-								.parseInt((proposal2.getPeriod().trim().split(":")[1]).trim().split("-")[1]);
+						int start2 = Integer.parseInt((proposal2.getPeriod().trim().split(":")[1]).trim().split("-")[0]);
+						int finish2 = Integer.parseInt((proposal2.getPeriod().trim().split(":")[1]).trim().split("-")[1]);
 
 						if (month1 == month2) {
 
@@ -143,9 +138,9 @@ public class TravelPortal {
 
 				}
 
-				Participant participant = new Participant(name);
-				participants.put(participant, Arrays.asList(code));
-				proposal.setAttendees(participant);
+			
+				participants.put(new Participant(name), Arrays.asList(code));
+				proposal.setAttendees(new Participant(name));
 
 			}
 
