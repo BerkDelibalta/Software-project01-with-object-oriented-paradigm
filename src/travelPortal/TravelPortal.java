@@ -3,7 +3,7 @@
 package travelPortal;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import static java.util.stream.Collectors.*;
 
 public class TravelPortal {
 
@@ -41,7 +41,7 @@ public class TravelPortal {
 			throw new TPException("The agency already defined!");
 
 		for (String activity : activityTypes) {
-			if (!activities.contains(activity)) throw new TPException("The activity is not defined before!");
+			if (!activities.contains(activity))	throw new TPException("The activity is not defined before!");
 
 			agencies.add(new Agency(name, activity));
 		}
@@ -52,8 +52,8 @@ public class TravelPortal {
 
 	public SortedMap<String, List<String>> getAgenciesForActivityTypes() {
 
-		return agencies.stream().sorted(Comparator.comparing(Agency::getName)).collect(Collectors.groupingBy(
-				Agency::getActivity, TreeMap::new, Collectors.mapping(Agency::getName, Collectors.toList())));
+		return agencies.stream().sorted(Comparator.comparing(Agency::getName)).collect(groupingBy(
+				Agency::getActivity, TreeMap::new,mapping(Agency::getName,toList())));
 
 	}
 
@@ -65,8 +65,9 @@ public class TravelPortal {
 
 		if (agencies.stream().noneMatch(e -> e.getName().equals(agency))) throw new TPException("The agency is not existing!");
 
+		Proposal proposal = new Proposal(agency, period, minNP, maxNP, price);
 
-		proposals.put(code, new Proposal(agency, period, minNP, maxNP, price));
+		proposals.put(code, proposal);
 
 		String theTime = period.trim().split(":")[1];
 
@@ -83,18 +84,19 @@ public class TravelPortal {
 		if (agencies.stream().filter(e -> e.getName().equals(proposal.getAgency()))
 				.noneMatch(e -> e.getActivity().equals(activityType))) throw new TPException("The agency does not offer the activity!");
 
+
 		proposal.AddActivities(new Activity(activityType, price));
 
-		return proposals.get(code).getActivities().stream().map(Activity::getPrice)
-				.collect(Collectors.summingInt(Integer::intValue));
+		return proposals.get(code).getActivities().stream().mapToInt(Activity::getPrice).sum();
 
 	}
 
 	public int getProposalPrice(String code) throws TPException {
 	
-		if (!proposals.containsKey(code)) throw new TPException("The proposal does not exist!");
+		if (!proposals.containsKey(code))		throw new TPException("The proposal does not exist!");
 
-		int activitiesTotalPrice = proposals.get(code).getActivities().stream().mapToInt(Activity::getPrice).sum();
+		int activitiesTotalPrice = proposals.get(code).getActivities().stream().map(Activity::getPrice)
+				.collect(summingInt(Integer::intValue));
 
 		return proposals.get(code).getPrice() + activitiesTotalPrice;
 
@@ -124,7 +126,8 @@ public class TravelPortal {
 
 						int month2 = Integer.parseInt(proposal2.getPeriod().trim().split(":")[0]);
 						int start2 = Integer.parseInt((proposal2.getPeriod().trim().split(":")[1]).trim().split("-")[0]);
-						int finish2 = Integer.parseInt((proposal2.getPeriod().trim().split(":")[1]).trim().split("-")[1]);
+						int finish2 = Integer
+								.parseInt((proposal2.getPeriod().trim().split(":")[1]).trim().split("-")[1]);
 
 						if (month1 == month2) {
 
@@ -137,16 +140,16 @@ public class TravelPortal {
 
 				}
 
-			
 				participants.put(new Participant(name), Arrays.asList(code));
 				proposal.setAttendees(new Participant(name));
 
 			}
 
 			if (proposal.getAttendees().size() >= proposal.getMaxNP()
-					|| proposal.getAttendees().size() < proposal.getMinNP()) throw new TPException("The number of attendees to the tour is out of range!");
+					|| proposal.getAttendees().size() < proposal.getMinNP())
+				throw new TPException("The number of attendees to the tour is out of range!");
 
-			return proposal.getAttendees().stream().map(Participant::getName).collect(Collectors.toList());
+			return proposal.getAttendees().stream().map(Participant::getName).collect(toList());
 
 		}
 
@@ -182,9 +185,10 @@ public class TravelPortal {
 		tmp = "";
 		int index = 0;
 
-         if (proposal != null) {
+		if (proposal != null) {
 
-             if (proposal.getAttendees().size() != evaluationsSize) throw new TPException("The number of evaluations should be equal to the number of participants!");
+			if (proposal.getAttendees().size() != evaluationsSize)
+				throw new TPException("The number of evaluations should be equal to the number of participants!");
 
 			for (Participant participant : proposal.getAttendees()) {
 
@@ -207,9 +211,8 @@ public class TravelPortal {
 
 	public SortedMap<String, Integer> getTotalRatingsForParticipants() {
 
-		return Evaluations.stream()
-			.collect(Collectors.groupingBy(Evaluation::getParticipant, TreeMap::new,
-				Collectors.mapping(Evaluation::getPoint, Collectors.summingInt(Integer::intValue))));
+		return Evaluations.stream().collect(groupingBy(Evaluation::getParticipant, TreeMap::new,
+				mapping(Evaluation::getPoint,summingInt(Integer::intValue))));
 
 	}
 
@@ -219,22 +222,21 @@ public class TravelPortal {
 
 		return proposals.entrySet().stream().flatMap(e -> e.getValue().getActivities().stream())
 				.sorted(Comparator.comparing(Activity::getActivityType))
-				.collect(Collectors.groupingBy(Activity::getActivityType, TreeMap::new,
-						Collectors.mapping(Activity::getPrice, Collectors.summingInt(Integer::intValue))));
+				.collect(groupingBy(Activity::getActivityType, TreeMap::new,
+						mapping(Activity::getPrice,summingInt(Integer::intValue))));
 
 	}
 
-
+//lista partecipanti che partecipano allo stesso numero di proposte
 	public SortedMap<Integer, List<String>> participantsWithSameNofProposals() {
 
-		return proposals.entrySet().stream()
-			.flatMap(e -> e.getValue().getAttendees().stream())
-				.collect(Collectors.groupingBy(Participant::getName, TreeMap::new,
-						Collectors.collectingAndThen(Collectors.counting(), Long::intValue)))
+		return proposals.entrySet().stream().flatMap(e -> e.getValue().getAttendees().stream())
+				.collect(groupingBy(Participant::getName, TreeMap::new,
+						collectingAndThen(counting(), Long::intValue)))
 				.entrySet().stream()
-				.collect(Collectors.groupingBy(x -> x.getValue(),
+				.collect(groupingBy(x -> x.getValue(),
 						() -> new TreeMap<Integer, List<String>>(Comparator.naturalOrder()),
-						Collectors.mapping(x -> x.getKey(), Collectors.toList())));
+						mapping(x -> x.getKey(),toList())));
 
 	}
 }
