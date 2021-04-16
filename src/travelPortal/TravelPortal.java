@@ -230,7 +230,7 @@ public class TravelPortal {
 //lista partecipanti che partecipano allo stesso numero di proposte
 	public SortedMap<Integer, List<String>> participantsWithSameNofProposals() {
 
-		return proposals.entrySet().stream().flatMap(e -> e.getValue().getAttendees().stream())
+		return proposals.values().stream().flatMap(e -> e.getAttendees().stream())
 				.collect(groupingBy(Participant::getName, TreeMap::new,
 						collectingAndThen(counting(), Long::intValue)))
 				.entrySet().stream()
