@@ -79,7 +79,7 @@ public class TravelPortal {
 	public int addActivity(String code, String activityType, String description, int price) throws TPException {
 
 
-		if (agencies.stream().filter(e -> e.getName().equals(proposal.getAgency()))
+		if (agencies.stream().filter(e -> e.getName().equals(proposals.get(code).getAgency()))
 				.noneMatch(e -> e.getActivity().equals(activityType))) throw new TPException("The agency does not offer the activity!");
 
 
