@@ -1,10 +1,10 @@
-
 //Authored by Berk Delibalta
 
 package travelPortal;
 
 import java.util.*;
 import static java.util.stream.Collectors.*;
+import static  java.util.Comparator.*;
 
 public class TravelPortal {
 
@@ -53,7 +53,7 @@ public class TravelPortal {
 
     public SortedMap<String, List<String>> getAgenciesForActivityTypes() {
 
-        return agencies.stream().sorted(Comparator.comparing(Agency::getName)).collect(groupingBy(
+        return agencies.stream().sorted(comparing(Agency::getName)).collect(groupingBy(
                 Agency::getActivity, TreeMap::new,mapping(Agency::getName,toList())));
 
     }
@@ -216,7 +216,7 @@ public class TravelPortal {
     public SortedMap<String, Integer> incomeForActivityTypes() {
 
         return proposals.values().stream().flatMap(e -> e.getActivities().stream())
-                .sorted(Comparator.comparing(Activity::getActivityType))
+                .sorted(comparing(Activity::getActivityType))
                 .collect(groupingBy(Activity::getActivityType, TreeMap::new,
                         mapping(Activity::getPrice,summingInt(Integer::intValue))));
 
