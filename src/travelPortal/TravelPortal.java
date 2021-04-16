@@ -23,7 +23,7 @@ public class TravelPortal {
 
 	}
 
-//R1
+	//R1
 	public List<String> addActivityTypes(String... names) {
 		for (String name : names) {
 			activities.add(name);
@@ -57,9 +57,9 @@ public class TravelPortal {
 
 	}
 
-//R2
+	//R2
 	public int addProposal(String code, String agency, String destination, String period, int minNP, int maxNP,
-			int price) throws TPException {
+						   int price) throws TPException {
 
 		if (proposals.containsKey(code)) throw new TPException("The proposal code has been defined before!");
 
@@ -90,7 +90,7 @@ public class TravelPortal {
 	}
 
 	public int getProposalPrice(String code) throws TPException {
-	
+
 		if (!proposals.containsKey(code)) throw new TPException("The proposal does not exist!");
 
 		int activitiesTotalPrice = proposals.get(code).getActivities().stream().mapToInt(Activity::getPrice).sum();
@@ -99,7 +99,7 @@ public class TravelPortal {
 
 	}
 
-//R3
+	//R3
 	public List<String> addParticipants(String code, String... names) throws TPException {
 
 		Proposal proposal = proposals.get(code);
@@ -129,7 +129,7 @@ public class TravelPortal {
 						if (month1 == month2) {
 
 							if (start2 >= start1 && finish2 >= finish1) throw new TPException("Error: overlapping periods!");
-							
+
 							continue;
 						}
 
@@ -173,13 +173,12 @@ public class TravelPortal {
 
 	}
 
-//R4
+	//R4
 	public String addRatings(String code, int... evaluations) throws TPException {
 
 		int evaluationsSize = evaluations.length;
 		Proposal proposal = proposals.get(code);
-		String tmp = new String();
-		tmp = "";
+		String tmp="";
 		int index = 0;
 
 		if (proposal != null) {
@@ -224,7 +223,7 @@ public class TravelPortal {
 
 	}
 
-//lista partecipanti che partecipano allo stesso numero di proposte
+	//lista partecipanti che partecipano allo stesso numero di proposte
 	public SortedMap<Integer, List<String>> participantsWithSameNofProposals() {
 
 		return proposals.values().stream().flatMap(e -> e.getAttendees().stream())
@@ -232,7 +231,7 @@ public class TravelPortal {
 						collectingAndThen(counting(), Long::intValue)))
 				.entrySet().stream()
 				.collect(groupingBy(x -> x.getValue(),
-						() -> new TreeMap<Integer, List<String>>(Comparator.naturalOrder()),
+						TreeMap::new,
 						mapping(x -> x.getKey(),toList())));
 
 	}
