@@ -94,8 +94,7 @@ public class TravelPortal {
 	
 		if (!proposals.containsKey(code)) throw new TPException("The proposal does not exist!");
 
-		int activitiesTotalPrice = proposals.get(code).getActivities().stream().map(Activity::getPrice)
-				.collect(Collectors.summingInt(Integer::intValue));
+		int activitiesTotalPrice = proposals.get(code).getActivities().stream().mapToInt(Activity::getPrice).sum();
 
 		return proposals.get(code).getPrice() + activitiesTotalPrice;
 
