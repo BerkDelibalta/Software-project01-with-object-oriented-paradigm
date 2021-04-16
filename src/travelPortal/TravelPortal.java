@@ -65,9 +65,8 @@ public class TravelPortal {
 
 		if (agencies.stream().noneMatch(e -> e.getName().equals(agency))) throw new TPException("The agency is not existing!");
 
-		Proposal proposal = new Proposal(agency, period, minNP, maxNP, price);
 
-		proposals.put(code, proposal);
+		proposals.put(code, new Proposal(agency, period, minNP, maxNP, price));
 
 		String theTime = period.trim().split(":")[1];
 
@@ -79,13 +78,12 @@ public class TravelPortal {
 
 	public int addActivity(String code, String activityType, String description, int price) throws TPException {
 
-		Proposal proposal = proposals.get(code);
 
 		if (agencies.stream().filter(e -> e.getName().equals(proposal.getAgency()))
 				.noneMatch(e -> e.getActivity().equals(activityType))) throw new TPException("The agency does not offer the activity!");
 
 
-		proposal.AddActivities(new Activity(activityType, price));
+		proposals.get(code).AddActivities(new Activity(activityType, price));
 
 		return proposals.get(code).getActivities().stream().mapToInt(Activity::getPrice).sum();
 
@@ -93,10 +91,9 @@ public class TravelPortal {
 
 	public int getProposalPrice(String code) throws TPException {
 	
-		if (!proposals.containsKey(code))		throw new TPException("The proposal does not exist!");
+		if (!proposals.containsKey(code)) throw new TPException("The proposal does not exist!");
 
-		int activitiesTotalPrice = proposals.get(code).getActivities().stream().map(Activity::getPrice)
-				.collect(summingInt(Integer::intValue));
+		int activitiesTotalPrice = proposals.get(code).getActivities().stream().mapToInt(Activity::getPrice).sum();
 
 		return proposals.get(code).getPrice() + activitiesTotalPrice;
 
